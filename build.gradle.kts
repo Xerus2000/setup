@@ -31,6 +31,8 @@ dependencies {
         exclude("com.sparetimelabs:purejavacomm:0.0.17")
     }
     compile("com.sparetimelabs:purejavacomm:0.0.17")
+    
+    compile(files("PreferencesFX-1.3.0-SNAPSHOT.jar"))
 }
 
 tasks.withType<KotlinCompile> {
