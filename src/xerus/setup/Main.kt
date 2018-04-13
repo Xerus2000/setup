@@ -32,7 +32,9 @@ fun main(args: Array<String>) {
 		if (file != null) {
 			file.readText().split("\n\n").forEach {
 				val split = it.split('\n', limit = 3)
-				SetupType.valueOf(split[0]).tab(split[2]).text = split[1]
+				val tab = SetupType.valueOf(split[0]).tab()
+				tab.deserialize(split[2])
+				tab.text = split[1]
 			}
 		} else
 			core.tabs.add(ExecTab("fdisk -l\nwhereami"))
@@ -54,9 +56,9 @@ fun main(args: Array<String>) {
 	})
 }
 
-enum class SetupType(val tab: (String) -> SetupTab) {
-	COMMANDS({ ExecTab(it) }),
-	CREATEFILE({ FileTab(it) }),
-	//REPLACE({ ReplaceTab() }),
-	//LINK({ LinkTab() })
+enum class SetupType(val tab: () -> SetupTab) {
+	COMMANDS({ ExecTab() }),
+	CREATEFILE({ FileTab() }),
+	REPLACE({ ReplaceTab() }),
+	LINK({ LinkTab() })
 }

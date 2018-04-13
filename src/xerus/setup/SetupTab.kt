@@ -20,6 +20,7 @@ abstract class SetupTab : Tab() {
 	
 	abstract fun execute()
 	
+	abstract fun deserialize(string: String)
 	abstract fun serialize(): String
 	
 }
