@@ -1,7 +1,10 @@
 package xerus.setup
 
 import com.pty4j.PtyProcess
-import javafx.scene.control.*
+import javafx.scene.control.CheckBox
+import javafx.scene.control.Label
+import javafx.scene.control.TextArea
+import javafx.scene.control.TextField
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import xerus.ktutil.dump
@@ -70,7 +73,7 @@ class FileTab : SetupTab() {
 
 class LinkTab : SetupTab() {
 	
-	val view = ExpandableView<Pair<FileChooser, FileChooser>>({
+	val view = ExpandableView({
 		arrayOf(VBox(it.first.createHBox(), it.second.createHBox()))
 	}, { createLink() })
 	
@@ -104,7 +107,7 @@ class ReplaceTab : SetupTab() {
 	
 	val regexCheck = CheckBox("Enable Regex")
 	val files = ExpandableView({
-		arrayOf(it.textField, it.button)
+		arrayOf(it.textField(), it.button())
 	}, {
 		chooser("File")
 	})

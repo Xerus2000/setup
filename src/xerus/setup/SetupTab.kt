@@ -7,7 +7,7 @@ import xerus.ktutil.javafx.createButton
 
 abstract class SetupTab : Tab() {
 	
-	protected val content = VBox(createButton("Run") { execute() })
+	protected val content = VBox(createButton("Run") { execute() }.also { it.maxWidth = Double.MAX_VALUE })
 	
 	init {
 		setContent(content)

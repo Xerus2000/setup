@@ -1,9 +1,7 @@
 package xerus.setup
 
-import com.dlsc.preferencesfx.PreferencesFx
-import com.dlsc.preferencesfx.model.Category
-import com.dlsc.preferencesfx.model.Setting
 import com.terminalfx.TerminalTab
+import javafx.application.Platform
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.collections.ObservableList
 import javafx.geometry.Side
@@ -14,6 +12,7 @@ import xerus.ktutil.javafx.properties.listen
 import xerus.ktutil.javafx.ui.App
 import java.io.File
 import java.util.prefs.Preferences
+import kotlin.reflect.KClass
 
 val pref = Preferences.userNodeForPackage(ExecTab::class.java)
 val storageFile
@@ -27,20 +26,19 @@ fun main(args: Array<String>) {
 		val core = TabPane()
 		core.side = Side.LEFT
 		tabs = core.tabs
-		core.tabs.add(TerminalTab("Terminal"))
+		tabs.add(TerminalTab("Terminal"))
 		val file = storageFile
 		if (file != null) {
 			file.readText().split("\n\n").forEach {
 				val split = it.split('\n', limit = 3)
-				val tab = SetupType.valueOf(split[0]).tab()
+				val tab = SetupType.newTab(split[0])
 				tab.deserialize(split[2])
 				tab.text = split[1]
 			}
 		} else
 			core.tabs.add(ExecTab("fdisk -l\nwhereami"))
 		
-		PreferencesFx.of(App::class.java,
-				Category.of("Bla", Setting.of("double", double)))
+		//PreferencesFx.of(App::class.java, Category.of("Bla", Setting.of("double", double)))
 		//core.tabs.add(Tab("Settings",))
 		Scene(core)
 	}, stager = {
@@ -53,12 +51,17 @@ fun main(args: Array<String>) {
 				}
 			}
 		}
+		it.setOnHiding { Platform.exit() }
 	})
 }
 
-enum class SetupType(val tab: () -> SetupTab) {
-	COMMANDS({ ExecTab() }),
-	CREATEFILE({ FileTab() }),
-	REPLACE({ ReplaceTab() }),
-	LINK({ LinkTab() })
+enum class SetupType(val tab: KClass<out SetupTab>) {
+	COMMANDS(ExecTab::class),
+	CREATEFILE(FileTab::class),
+	REPLACE(ReplaceTab::class),
+	LINK(LinkTab::class);
+	
+	companion object {
+		fun newTab(type: String) = valueOf(type.toUpperCase()).tab.java.newInstance()
+	}
 }
