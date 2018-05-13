@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.2.40"
+    kotlin("jvm") version "1.2.41"
 }
 
 group = "xerus.setup"
@@ -21,7 +21,6 @@ repositories {
 }
 
 dependencies {
-    compile(kotlin("stdlib"))
     compile("xerus.util", "javafx")
     
     compile("com.asciidocfx", "terminalfx", "1.3") {

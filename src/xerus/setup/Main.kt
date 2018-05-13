@@ -10,6 +10,7 @@ import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import xerus.ktutil.javafx.properties.listen
 import xerus.ktutil.javafx.ui.App
+import xerus.setup.tabs.*
 import java.io.File
 import java.util.prefs.Preferences
 import kotlin.reflect.KClass
@@ -19,7 +20,10 @@ val storageFile
 	get() = File(pref.get("file", "")).takeIf { it.exists() }
 
 val double = SimpleDoubleProperty(2.0)
+
 lateinit var tabs: ObservableList<Tab>
+inline fun <reified T: SerializableTab> tab(name: String = ""): Collection<T> =
+		tabs.filterIsInstance(T::class.java).filter { it.text.contains(name, true) }
 
 fun main(args: Array<String>) {
 	App.launch("Setup Utility", scene = {
@@ -55,13 +59,3 @@ fun main(args: Array<String>) {
 	})
 }
 
-enum class SetupType(val tab: KClass<out SetupTab>) {
-	COMMANDS(ExecTab::class),
-	CREATEFILE(FileTab::class),
-	REPLACE(ReplaceTab::class),
-	LINK(LinkTab::class);
-	
-	companion object {
-		fun newTab(type: String) = valueOf(type.toUpperCase()).tab.java.newInstance()
-	}
-}
